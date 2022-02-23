@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mryulong.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="闲谈为什么要离职最近在读什么技术书籍Object-C &#x2F; SwiftOC 类+load 方法，子类和父类哪个先执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试复盘">
+<meta property="og:url" content="https://mryulong.github.io/2018/08/24/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/index.html">
+<meta property="og:site_name" content="番茄是一只猫的博客">
+<meta property="og:description" content="闲谈为什么要离职最近在读什么技术书籍Object-C &#x2F; SwiftOC 类+load 方法，子类和父类哪个先执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-24T03:20:01.000Z">
+<meta property="article:modified_time" content="2022-02-09T03:04:41.975Z">
+<meta property="article:author" content="番茄是一只猫">
+<meta property="article:tag" content="面试">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://mryulong.github.io/2018/08/24/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mryulong.github.io/2018/08/24/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/","path":"2018/08/24/面试复盘/","title":"面试复盘"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>面试复盘 | 番茄是一只猫的博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="番茄是一只猫的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">番茄是一只猫的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Say something</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%B2%E8%B0%88"><span class="nav-number">1.</span> <span class="nav-text">闲谈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%A6%BB%E8%81%8C"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要离职</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%80%E8%BF%91%E5%9C%A8%E8%AF%BB%E4%BB%80%E4%B9%88%E6%8A%80%E6%9C%AF%E4%B9%A6%E7%B1%8D"><span class="nav-number">1.2.</span> <span class="nav-text">最近在读什么技术书籍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Object-C-Swift"><span class="nav-number">2.</span> <span class="nav-text">Object-C &#x2F; Swift</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#OC-%E7%B1%BB-load-%E6%96%B9%E6%B3%95%EF%BC%8C%E5%AD%90%E7%B1%BB%E5%92%8C%E7%88%B6%E7%B1%BB%E5%93%AA%E4%B8%AA%E5%85%88%E6%89%A7%E8%A1%8C"><span class="nav-number">2.1.</span> <span class="nav-text">OC 类+load 方法，子类和父类哪个先执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OC-%E4%B8%AD-Category-%E5%92%8C-Extensio-%E7%9A%84%E5%8C%BA%E5%88%AB%EF%BC%8CCategory-%E8%83%BD%E5%90%A6%E6%B7%BB%E5%8A%A0%E5%B1%9E%E6%80%A7"><span class="nav-number">2.2.</span> <span class="nav-text">OC 中 Category 和 Extensio 的区别，Category 能否添加属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E4%BF%AE%E9%A5%B0%E5%85%B3%E9%94%AE%E8%AF%8D%EF%BC%8C%E5%A6%82%E6%9E%9C%E5%AF%B9%E5%A4%96%E5%8F%AA%E8%AF%BB%EF%BC%8C-m-%E5%8F%AF%E4%BB%A5%E4%BF%AE%E6%94%B9%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F%E5%A6%82%E6%9E%9C%E6%83%B3-self-pro-%E6%9D%A5%E4%BF%AE%E6%94%B9%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F"><span class="nav-number">2.3.</span> <span class="nav-text">属性修饰关键词，如果对外只读，.m 可以修改怎么办？如果想 self.pro 来修改怎么办？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#copy-%E4%BF%AE%E9%A5%B0%E5%8F%AF%E5%8F%98-MutableArray-%E4%BC%9A%E6%80%8E%E4%B9%88%E6%A0%B7"><span class="nav-number">2.4.</span> <span class="nav-text">copy 修饰可变 MutableArray 会怎么样</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%98%AF%E5%90%A6%E7%94%A8-Swift-%E5%BC%80%E5%8F%91%EF%BC%8C%E7%86%9F%E6%82%89%E7%A8%8B%E5%BA%A6%EF%BC%8Cprotocol-%E5%9C%A8-swift-%E5%92%8C-OC-%E9%87%8C%E7%9A%84%E5%8D%B4%E5%88%AB"><span class="nav-number">2.5.</span> <span class="nav-text">是否用 Swift 开发，熟悉程度，protocol 在 swift 和 OC 里的却别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Swift-%E7%BB%93%E6%9E%84%E4%BD%93%E9%87%8C%E7%9A%84%E6%96%B9%E6%B3%95%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99"><span class="nav-number">2.6.</span> <span class="nav-text">Swift 结构体里的方法如何重写</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Swift-%E5%87%A0%E5%A4%A7%E5%85%B3%E9%94%AE%E5%AD%97%E7%9A%84%E5%8C%BA%E5%88%AB-fileprivate%E3%80%81open-%E3%80%81private%E3%80%81public%E3%80%81internal"><span class="nav-number">2.7.</span> <span class="nav-text">Swift 几大关键字的区别 fileprivate、open 、private、public、internal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Swift-%E9%87%8C%E5%81%9A%E6%96%B9%E6%B3%95%E4%BA%A4%E6%8D%A2%EF%BC%8C%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.8.</span> <span class="nav-text">Swift 里做方法交换，如何实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E7%94%A8%E7%9A%84%E4%BB%80%E4%B9%88%EF%BC%8Cplist-%E5%86%85%E5%AD%98%E5%8A%A0%E8%BD%BD%E6%80%A7%E8%83%BD%E6%8D%9F%E8%80%97%E9%97%AE%E9%A2%98%EF%BC%8Ccoredata-%E7%BC%BA%E7%82%B9"><span class="nav-number">2.9.</span> <span class="nav-text">数据库用的什么，plist 内存加载性能损耗问题，coredata 缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#lru-%E7%AE%97%E6%B3%95"><span class="nav-number">2.10.</span> <span class="nav-text">lru 算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#AF-SD-%E7%9A%84%E6%BA%90%E7%A0%81%E6%98%AF%E5%90%A6%E6%9C%89%E8%AF%BB%E8%BF%87%EF%BC%8CSD-%E7%9A%84-downloadOpera-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E9%87%8D%E5%86%99-start-%E6%96%B9%E6%B3%95%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF-main-%E6%96%B9%E6%B3%95%EF%BC%8C%E5%8C%BA%E5%88%AB%E5%9C%A8%E5%93%AA%E9%87%8C%E3%80%82AF-%E9%87%8C%E9%9D%A2%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA-Runloop"><span class="nav-number">2.11.</span> <span class="nav-text">AF SD 的源码是否有读过，SD 的 downloadOpera 为什么是重写 start 方法，而不是 main 方法，区别在哪里。AF 里面为什么要定义一个 Runloop</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BB%80%E4%B9%88%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7"><span class="nav-number">2.12.</span> <span class="nav-text">内存泄漏使用的什么检测工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#iOS-%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%E9%94%81%EF%BC%8C%E5%90%84%E8%87%AA%E7%9A%84%E6%95%88%E7%8E%87%E9%AB%98%E4%BD%8E"><span class="nav-number">2.13.</span> <span class="nav-text">iOS 有哪几种锁，各自的效率高低</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tableview-%E5%92%8C-collectionView-%E5%8C%BA%E5%88%AB"><span class="nav-number">2.14.</span> <span class="nav-text">tableview 和 collectionView 区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#delegate-%E5%92%8C-Block-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.15.</span> <span class="nav-text">delegate 和 Block 的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#block-%E7%9A%84%E5%88%86%E7%B1%BB%EF%BC%9A"><span class="nav-number">2.15.1.</span> <span class="nav-text">block 的分类：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Crash-%E6%8D%95%E6%8D%89%E6%98%AF%E5%90%A6%E6%98%AF%E8%87%AA%E5%B7%B1%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%8C%E5%8E%BB%E8%BF%87%E5%90%AF%E5%8A%A8%E5%B0%B1%E5%8F%91%E7%94%9F-crash%EF%BC%8C%E5%A6%82%E4%BD%95%E6%8D%95%E6%8D%89"><span class="nav-number">2.16.</span> <span class="nav-text">Crash 捕捉是否是自己实现的，去过启动就发生 crash，如何捕捉</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%98%AF%E5%90%A6%E5%81%9A%E5%8D%95%E5%85%83%E6%B5%8B%E8%AF%95%E3%80%81UI-%E6%B5%8B%E8%AF%95"><span class="nav-number">2.17.</span> <span class="nav-text">是否做单元测试、UI 测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%BF%87%E4%BB%80%E4%B9%88-Json-%E8%A7%A3%E6%9E%90%E5%BA%93%EF%BC%8CModel-%E8%BD%AC%E6%8D%A2%E5%B7%A5%E5%85%B7%E3%80%81"><span class="nav-number">2.18.</span> <span class="nav-text">使用过什么 Json 解析库，Model 转换工具、</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E4%BA%86-Autolayout-%E6%98%AF%E5%90%A6%E8%BF%98%E6%8E%A5%E8%A7%A6%E8%BF%87%E8%B7%A8%E5%B9%B3%E5%8F%B0%E7%9A%84-Yoga-%E5%B8%83%E5%B1%80"><span class="nav-number">2.19.</span> <span class="nav-text">除了 Autolayout 是否还接触过跨平台的 Yoga 布局</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-%E8%AF%B7%E6%B1%82%E4%BE%9D%E8%B5%96-A-%E3%80%81B-%E8%AF%B7%E6%B1%82%E5%AE%8C%E6%88%90%E5%A6%82%E4%BD%95%E5%81%9A%EF%BC%8CGCD-%E6%80%8E%E4%B9%88%E5%81%9A%EF%BC%8C%E4%B8%8D%E7%94%A8-GCD-%E6%80%8E%E4%B9%88%E5%81%9A%EF%BC%8Coperation-%E6%98%AF%E5%90%A6%E8%83%BD%E6%B7%BB%E5%8A%A0%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96"><span class="nav-number">2.20.</span> <span class="nav-text">C 请求依赖 A 、B 请求完成如何做，GCD 怎么做，不用 GCD 怎么做，operation 是否能添加多个依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Runloop-%E7%9A%84-model-%E6%98%AF%E5%90%A6%E4%BA%86%E8%A7%A3%E8%BF%87%EF%BC%8CUITrackingRunLoopMode-%E5%92%8C-NSRunLoopCommonModes-%E5%93%AA%E4%B8%AA%E4%BC%98%E5%85%88%E7%BA%A7%E6%9B%B4%E5%BC%BA"><span class="nav-number">2.21.</span> <span class="nav-text">Runloop 的 model 是否了解过，UITrackingRunLoopMode 和 NSRunLoopCommonModes 哪个优先级更强</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%9A%E6%AC%A1%E5%AF%B9%E5%90%8C%E4%B8%80%E4%B8%AA%E6%96%B9%E6%B3%95-method-swizzing%EF%BC%8C%E4%BC%9A%E6%9C%89%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="nav-number">2.22.</span> <span class="nav-text">多次对同一个方法 method swizzing，会有什么问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#method-swizzing-%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%86%99%E6%B3%95%E8%AE%A8%E8%AE%BA"><span class="nav-number">2.22.1.</span> <span class="nav-text">method swizzing 的两种写法讨论</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Git"><span class="nav-number">3.</span> <span class="nav-text">Git</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E7%AE%A1%E7%90%86%EF%BC%8C%E7%BB%88%E7%AB%AF%E8%BF%98%E6%98%AF%E5%AE%A2%E6%88%B7%E7%AB%AF%EF%BC%8C%E4%BD%BF%E7%94%A8%E8%BF%87-cherry-pick-%E6%8C%87%E5%AE%9A%E6%B2%A1"><span class="nav-number">3.1.</span> <span class="nav-text">源码管理，终端还是客户端，使用过 cherry-pick 指定没</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#git-rebase-%E5%92%8C-git-stash-%E4%BD%BF%E7%94%A8%E3%80%81%E4%BD%9C%E7%94%A8"><span class="nav-number">3.2.</span> <span class="nav-text">git rebase 和 git stash 使用、作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E5%88%86%E6%94%AF%E6%88%96%E8%80%85-tag-%E6%8C%87%E4%BB%A4"><span class="nav-number">3.3.</span> <span class="nav-text">删除分支或者 tag 指令</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http-Https"><span class="nav-number">4.</span> <span class="nav-text">Http&#x2F;Https</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Https-%E4%BC%A0%E8%BE%93%E5%8A%A0%E5%AF%86%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%8C%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E8%BF%98%E6%98%AF%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86"><span class="nav-number">4.1.</span> <span class="nav-text">Https 传输加密的方法，对称加密还是非对称加密?</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HTPPS-%E5%A4%A7%E8%87%B4%E4%BC%A0%E8%BE%93%E8%BF%87%E7%A8%8B"><span class="nav-number">4.2.</span> <span class="nav-text">HTPPS 大致传输过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%8F%E5%B8%B8%E4%BD%BF%E7%94%A8%E7%9A%84%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">经常使用的加密算法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E5%8C%96%E7%9B%B8%E5%85%B3"><span class="nav-number">5.</span> <span class="nav-text">组件化相关</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%84%E4%BB%B6%E5%8C%96%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E7%9A%84%EF%BC%8C%E4%B8%8D%E5%90%8C%E6%A8%A1%E5%9D%97%E4%B9%8B%E9%97%B4%E7%9A%84%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">组件化是如何做的，不同模块之间的通信方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#URL-%E7%9A%84%E6%96%B9%E5%BC%8F%E8%B7%AF%E7%94%B1%EF%BC%8C%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E5%8C%96%E6%96%B9%E6%A1%88%EF%BC%8C%E6%B3%A8%E5%86%8C%E7%9A%84%E6%97%B6%E6%9C%BA%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9Fload-%E6%96%B9%E6%B3%95%E4%B8%AD%E6%B3%A8%E5%86%8C%EF%BC%8C%E8%80%97%E6%97%B6%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4"><span class="nav-number">5.2.</span> <span class="nav-text">URL 的方式路由，有什么优化方案，注册的时机是什么？load 方法中注册，耗时如何优化启动时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%99%A4%E4%BA%86-Router-%E7%9A%84%E6%96%B9%E5%BC%8F%EF%BC%8C%E6%98%AF%E5%90%A6%E8%BF%98%E5%B0%9D%E8%AF%95%E8%BF%87%E5%85%B6%E4%BB%96%E6%96%B9%E5%BC%8F%E7%9A%84%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88"><span class="nav-number">5.3.</span> <span class="nav-text">除了 Router 的方式，是否还尝试过其他方式的组件化方案</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%98%BF%E9%87%8C%E7%9A%84-BeeHive-%E6%98%AF%E5%90%A6%E4%BA%86%E8%A7%A3%E8%BF%87"><span class="nav-number">5.4.</span> <span class="nav-text">阿里的 BeeHive 是否了解过</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%B7%E5%90%88%E5%BC%80%E5%8F%91"><span class="nav-number">6.</span> <span class="nav-text">混合开发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hybird%E3%80%81RN%E3%80%81Weex-%E6%9C%89%E5%B0%9D%E8%AF%95%E8%BF%87"><span class="nav-number">6.1.</span> <span class="nav-text">Hybird、RN、Weex 有尝试过</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%83%AD%E4%BF%AE%E5%A4%8D-JSPatch-%E5%8E%9F%E7%90%86%EF%BC%8C%E5%9C%A8%E5%93%AA%E4%B8%AA%E6%97%B6%E9%97%B4%E7%82%B9%E6%9B%BF%E6%8D%A2%E7%9A%84-%EF%BC%8C%E5%A6%82%E4%BD%95%E6%8B%BF%E5%88%B0%E6%8B%BF%E5%88%B0%E6%96%B9%E6%B3%95%E4%BB%A5%E5%8F%8A%E5%8F%82%E6%95%B0"><span class="nav-number">6.2.</span> <span class="nav-text">热修复 JSPatch 原理，在哪个时间点替换的 ，如何拿到拿到方法以及参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95"><span class="nav-number">7.</span> <span class="nav-text">算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%BE%E5%87%BA-2-%E4%B8%AA%E5%8D%95%E9%93%BE%E8%A1%A8%E7%9A%84%E4%BA%A4%E7%82%B9"><span class="nav-number">7.1.</span> <span class="nav-text">找出 2 个单链表的交点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E5%8F%89%E6%A0%91%E7%BF%BB%E8%BD%AC"><span class="nav-number">7.2.</span> <span class="nav-text">二叉树翻转</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="番茄是一只猫"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">番茄是一只猫</p>
+  <div class="site-description" itemprop="description">常怀敬畏之心，方能行有所止</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MrYulong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MrYulong" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yulong.me@gmail.com" title="E-Mail → mailto:yulong.me@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mryulong.github.io/2018/08/24/%E9%9D%A2%E8%AF%95%E5%A4%8D%E7%9B%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="番茄是一只猫">
+      <meta itemprop="description" content="常怀敬畏之心，方能行有所止">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="番茄是一只猫的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面试复盘
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-08-24 11:20:01" itemprop="dateCreated datePublished" datetime="2018-08-24T11:20:01+08:00">2018-08-24</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-02-09 11:04:41" itemprop="dateModified" datetime="2022-02-09T11:04:41+08:00">2022-02-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">面试</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h3 id="闲谈"><a href="#闲谈" class="headerlink" title="闲谈"></a>闲谈</h3><h4 id="为什么要离职"><a href="#为什么要离职" class="headerlink" title="为什么要离职"></a>为什么要离职</h4><h4 id="最近在读什么技术书籍"><a href="#最近在读什么技术书籍" class="headerlink" title="最近在读什么技术书籍"></a>最近在读什么技术书籍</h4><h3 id="Object-C-Swift"><a href="#Object-C-Swift" class="headerlink" title="Object-C / Swift"></a>Object-C / Swift</h3><h4 id="OC-类-load-方法，子类和父类哪个先执行"><a href="#OC-类-load-方法，子类和父类哪个先执行" class="headerlink" title="OC 类+load 方法，子类和父类哪个先执行"></a>OC 类+load 方法，子类和父类哪个先执行</h4><span id="more"></span>
+
+<table>
+<thead>
+<tr>
+<th></th>
+<th>+load</th>
+<th>+initialize</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>调用时机</td>
+<td>被添加到 runtime 时</td>
+<td>到第一条消息前，可能永远不调用</td>
+</tr>
+<tr>
+<td>同一个类，调用次数 （不考虑主动调用）</td>
+<td>1 次</td>
+<td>1 次</td>
+</tr>
+<tr>
+<td>调用顺序</td>
+<td>父类-&gt;本类-&gt;分类</td>
+<td>父类-&gt;本类(如果有分类，则调用分类)</td>
+</tr>
+<tr>
+<td>若自身未实现，是否沿用父类的方法？</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>类别中的定义</td>
+<td>全都执行，但后于本类的方法</td>
+<td>覆盖本类的方法，只执行一个</td>
+</tr>
+<tr>
+<td>线程安全</td>
+<td>安全</td>
+<td>安全</td>
+</tr>
+</tbody></table>
+<p>如果子类未实现+initialize 方法，会沿用父类的，这样会造成父类的+initialize 方法被多次调用，相比+load 就则不会沿用。+initialize 走的是 msgSend 流程，若类未收到消息一直不会被调用，+load 是在 Runtime 阶段调用。</p>
+<h4 id="OC-中-Category-和-Extensio-的区别，Category-能否添加属性"><a href="#OC-中-Category-和-Extensio-的区别，Category-能否添加属性" class="headerlink" title="OC 中 Category 和 Extensio 的区别，Category 能否添加属性"></a>OC 中 Category 和 Extensio 的区别，Category 能否添加属性</h4><p>1、Extension 是类的一部分，编译器就被加载，Category 在 Runtime 阶段载入，独立于类之外</p>
+<p>2、Extension 用于私有化属性和方法，仅有声明，Category 包括声明和实现，分散功能的实现，让业务更加清晰。</p>
+<p>可以添加属性 objc_setAssociatedObject、objc_getAssociatedObject 重写 set/get 方法，且支持 KVO</p>
+<h4 id="属性修饰关键词，如果对外只读，-m-可以修改怎么办？如果想-self-pro-来修改怎么办？"><a href="#属性修饰关键词，如果对外只读，-m-可以修改怎么办？如果想-self-pro-来修改怎么办？" class="headerlink" title="属性修饰关键词，如果对外只读，.m 可以修改怎么办？如果想 self.pro 来修改怎么办？"></a>属性修饰关键词，如果对外只读，.m 可以修改怎么办？如果想 self.pro 来修改怎么办？</h4><p>不能修改，需要_key 的方法来修改变量值，同时也可以通过 KVO 来修改。当使用 <code>setValue:forKey:</code> 来设置对象的属性时，会以下面的优先顺序来寻找对应的 <code>key</code>：</p>
+<ol>
+<li>消息接收对象会查找是否存在满足 <code>set&lt;Key&gt;:</code> 格式的存取方法。</li>
+<li>如果不存在满足条件的存取方法，且消息接收对象的类方法 <code>+ (BOOL)accessInstanceVariablesDirectly</code> 返回 YES，那么该对象会以 <code>_&lt;key&gt;</code>, <code>_is&lt;Key&gt;</code>, <code>&lt;key&gt;</code>, <code>is&lt;Key&gt;</code> 的顺序查找是否存在对应的 key。当然 <code>+ (BOOL)accessInstanceVariablesDirectly</code>返回 NO，便可以阻止 KVO 修改变量。</li>
+<li>如果存在对应的存取方法或者找到对应的实例变量，那么就会改变该 key 所对应的值 value。</li>
+<li>如果没有找到对应的存取方法或者实例变量，那么该消息对象的 <code>setValue:forUndefinedKey:</code> 将会调用。</li>
+</ol>
+<h4 id="copy-修饰可变-MutableArray-会怎么样"><a href="#copy-修饰可变-MutableArray-会怎么样" class="headerlink" title="copy 修饰可变 MutableArray 会怎么样"></a>copy 修饰可变 MutableArray 会怎么样</h4><p>对数组进行可变操作时候回造成 crash</p>
+<h4 id="是否用-Swift-开发，熟悉程度，protocol-在-swift-和-OC-里的却别"><a href="#是否用-Swift-开发，熟悉程度，protocol-在-swift-和-OC-里的却别" class="headerlink" title="是否用 Swift 开发，熟悉程度，protocol 在 swift 和 OC 里的却别"></a>是否用 Swift 开发，熟悉程度，protocol 在 swift 和 OC 里的却别</h4><p>1.OC 中的协议只能用于类,swift 中的协议不仅能用于类,还能用于结构体和枚举<br>2.OC 中的协议可以设置可选实现,但 Swift 中的协议必须实现<br>3.Swift 中的协议增加了一个关键字 mutating 可以决定结构体和枚举实现协议的时候,是否可以修改属性的值</p>
+<h4 id="Swift-结构体里的方法如何重写"><a href="#Swift-结构体里的方法如何重写" class="headerlink" title="Swift 结构体里的方法如何重写"></a>Swift 结构体里的方法如何重写</h4><h4 id="Swift-几大关键字的区别-fileprivate、open-、private、public、internal"><a href="#Swift-几大关键字的区别-fileprivate、open-、private、public、internal" class="headerlink" title="Swift 几大关键字的区别 fileprivate、open 、private、public、internal"></a>Swift 几大关键字的区别 fileprivate、open 、private、public、internal</h4><p>1、private<br>private 访问级别所修饰的属性或者方法只能在当前类里访问。</p>
+<p>2、fileprivate<br>fileprivate 访问级别所修饰的属性或者方法在当前的 Swift 源文件里可以访问。</p>
+<p>3、internal（默认访问级别，internal 修饰符可写可不写）<br>internal 访问级别所修饰的属性或方法在源代码所在的整个模块都可以访问。<br>如果是框架或者库代码，则在整个框架内部都可以访问，框架由外部代码所引用时，则不可以访问。<br>如果是 App 代码，也是在整个 App 代码，也是在整个 App 内部可以访问。</p>
+<p>4、public<br>可以被任何人访问。但其他 module 中不可以被 override 和继承，而在 module 内可以被 override 和继承。</p>
+<p>5，open<br>可以被任何人使用，包括 override 和继承。</p>
+<p>访问顺序：<br>现在的访问权限则依次为：open，public，internal，fileprivate，private。</p>
+<h4 id="Swift-里做方法交换，如何实现"><a href="#Swift-里做方法交换，如何实现" class="headerlink" title="Swift 里做方法交换，如何实现"></a>Swift 里做方法交换，如何实现</h4><p>Swift 方法交换</p>
+<p>swift4.0 中 initialize 和 load 都相继废除了，applicationDidFinishLaunching 方法中，检测所有注册的类，是否实现了提前声明的协议，如果实现了协议方法，则调起协议方法，在此方法中，实现 method swizzling</p>
+<p><a target="_blank" rel="noopener" href="http://blog.yaoli.site/post/%E5%A6%82%E4%BD%95%E4%BC%98%E9%9B%85%E5%9C%B0%E5%9C%A8Swift4%E4%B8%AD%E5%AE%9E%E7%8E%B0Method-Swizzling">如何优雅地在 Swift4 中实现 Method-Swizzling</a></p>
+<h4 id="数据库用的什么，plist-内存加载性能损耗问题，coredata-缺点"><a href="#数据库用的什么，plist-内存加载性能损耗问题，coredata-缺点" class="headerlink" title="数据库用的什么，plist 内存加载性能损耗问题，coredata 缺点"></a>数据库用的什么，plist 内存加载性能损耗问题，coredata 缺点</h4><p>FMDB、plist、CoreData</p>
+<p>plist 的读取是整体全部读入内存，如果频繁需要修改的数据，不建议用此方法，可以考虑 FMDB、CoreData</p>
+<p>CoreData,建立的表没有主键，添加时都要自己处理。它不是关系型数据库，处理多对多的关系时比较麻烦。</p>
+<p>CoreData 的一个比较大的痛点是多人合作开发的时候，管理 CoreData 的模型需要很小心，尤其是合并的时候，他的 data model 是 XML 格式的，手动 resolve 比较烦。</p>
+<p>CoreData 自定义升级麻烦,并且效率非常低下,升级的版本变动很难跟踪。</p>
+<h4 id="lru-算法"><a href="#lru-算法" class="headerlink" title="lru 算法"></a>lru 算法</h4><p>lru</p>
+<p>多用于链表缓存数据，新插入表头的数据，如果缓存命中则把数据取到表头，链表满的时候，优先删除链表尾部的数据。存在热点数据情况该算法很好用，但是如果有周期性或者偶发性任务，会导致缓存污染。</p>
+<p>lru-k</p>
+<ol>
+<li><p>数据第一次被访问，加入到访问历史列表；</p>
+</li>
+<li><p>如果数据在访问历史列表里后没有达到 K 次访问，则按照一定规则（FIFO，LRU）淘汰；</p>
+</li>
+<li><p>当访问历史队列中的数据访问次数达到 K 次后，将数据索引从历史队列删除，将数据移到缓存队列中，并缓存此数据，缓存队列重新按照时间排序；</p>
+</li>
+<li><p>缓存数据队列中被再次访问后，重新排序；</p>
+</li>
+<li><p>需要淘汰数据时，淘汰缓存队列中排在末尾的数据，即：淘汰“倒数第 K 次访问离现在最久”的数据。</p>
+</li>
+</ol>
+<p>LRU-K 具有 LRU 的优点，同时能够避免 LRU 的缺点，实际应用中 LRU-2 是综合各种因素后最优的选择，LRU-3 或者更大的 K 值命中率会高，但适应性差，需要大量的数据访问才能将历史访问记录清除掉</p>
+<h4 id="AF-SD-的源码是否有读过，SD-的-downloadOpera-为什么是重写-start-方法，而不是-main-方法，区别在哪里。AF-里面为什么要定义一个-Runloop"><a href="#AF-SD-的源码是否有读过，SD-的-downloadOpera-为什么是重写-start-方法，而不是-main-方法，区别在哪里。AF-里面为什么要定义一个-Runloop" class="headerlink" title="AF SD 的源码是否有读过，SD 的 downloadOpera 为什么是重写 start 方法，而不是 main 方法，区别在哪里。AF 里面为什么要定义一个 Runloop"></a>AF SD 的源码是否有读过，SD 的 downloadOpera 为什么是重写 start 方法，而不是 main 方法，区别在哪里。AF 里面为什么要定义一个 Runloop</h4><p>重写<code>main</code>方法比较简单，我们不需要管理操作的状态属性 <code>isExecuting</code> 和 <code>isFinished</code>。当 <code>main</code> 执行完返回的时候，这个操作就结束了。而 SD 中的操作可能有一些异步的操作并没有完成，需要手动管理线程执行状态，所以重写了<code>start</code>方法而非<code>main</code>方法。</p>
+<p>AF 2.x 定义 Runloop，为了保证 NSURLConnection 可以在网络发出线程接受回调，故需要 Runloop 保持线程存活状态。</p>
+<p>AF 3.x 采用了 NSURLSession，每个 NSURLSessionTask 绑定一个 AFURLSessionManagerTaskDelegate，这个 TaskDelegate 相当于把 NSURLSessionDelegate 进行了一层过滤，最终只保留类似 didCompleteWithError 这样对上层调用者输出的回调。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">self.operationQueue = [[NSOperationQueue alloc] init];</span><br><span class="line">// 此处设置并发数为1，是为了保证数据处理串行回调</span><br><span class="line">// 回调内部有一个NSLock，对 self.mutableTaskDelegatesKeyedByTaskIdentifier 的访问进行了加锁，目的保证多线程下数据的安全</span><br><span class="line">self.operationQueue.maxConcurrentOperationCount = 1;</span><br><span class="line">self.session = [NSURLSession sessionWithConfiguration:self.sessionConfiguration delegate:self delegateQueue:self.operationQueue];</span><br></pre></td></tr></table></figure>
+
+<h4 id="内存泄漏使用的什么检测工具"><a href="#内存泄漏使用的什么检测工具" class="headerlink" title="内存泄漏使用的什么检测工具"></a>内存泄漏使用的什么检测工具</h4><p>Xcode 自带的 Instruments 中的 leaks</p>
+<p>FB 开源的 FBRetainCycleDetector 静态库</p>
+<h4 id="iOS-有哪几种锁，各自的效率高低"><a href="#iOS-有哪几种锁，各自的效率高低" class="headerlink" title="iOS 有哪几种锁，各自的效率高低"></a>iOS 有哪几种锁，各自的效率高低</h4><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/7e9dd2cb78a8">iOS 十种线程锁</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_35247219/article/details/51930849"> 多线程的几种加锁方式详解</a></p>
+<h4 id="tableview-和-collectionView-区别"><a href="#tableview-和-collectionView-区别" class="headerlink" title="tableview 和 collectionView 区别"></a>tableview 和 collectionView 区别</h4><p>首先二者准守协议是不一样的，其次就 cell 的注册，后者必须声明注册而前者则非必须。前者更适用于一行一行的列表展示形式，而后者相对来说要灵活许多不限于这一种，可以自定义 flowlayout 实现许多负责的 cell 排列以及动画。</p>
+<h4 id="delegate-和-Block-的区别"><a href="#delegate-和-Block-的区别" class="headerlink" title="delegate 和 Block 的区别"></a>delegate 和 Block 的区别</h4><p>相同点：两者都是函数回调作用</p>
+<p>不同点：</p>
+<ol>
+<li> Block 是一个轻量级的，可以让声明和实现在一块，保持了代码的连贯性，而 delegate 则赋值和实现是分开的</li>
+<li> delegate 值是单纯的指针引用，回调时候为函数消息调用过程，block 相对之下更加复杂，会引用上下文，容易造成循环引用，要维护引用计数、自身由栈到堆的拷贝，故前者资源损坏要小于后者。</li>
+<li> 超过三个回调，delegate 可以通过多个代理方法实现，block 需要多次赋值实现，前者更简单，故超过三个回调建议使用 delegate</li>
+</ol>
+<h5 id="block-的分类："><a href="#block-的分类：" class="headerlink" title="block 的分类："></a>block 的分类：</h5><p>全局静态 block：不会访问任何外部变量，执行完就销毁</p>
+<p>保存在栈中的 block：调用了外部变量，当函数返回时候被销毁</p>
+<p>堆中的 block：当引用计数为 0 时候被销毁，被类强引用，copy 修饰的 block</p>
+<table>
+<thead>
+<tr>
+<th>block 在哪</th>
+<th>捕获变量</th>
+<th>ARC</th>
+<th>非 arc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>copy</td>
+<td>是</td>
+<td>heap</td>
+<td>heap</td>
+</tr>
+<tr>
+<td>no copy</td>
+<td>是</td>
+<td>heap</td>
+<td>stack</td>
+</tr>
+<tr>
+<td>copy</td>
+<td>否</td>
+<td>global</td>
+<td>global</td>
+</tr>
+<tr>
+<td>no copy</td>
+<td>否</td>
+<td>global</td>
+<td>global</td>
+</tr>
+</tbody></table>
+<h4 id="Crash-捕捉是否是自己实现的，去过启动就发生-crash，如何捕捉"><a href="#Crash-捕捉是否是自己实现的，去过启动就发生-crash，如何捕捉" class="headerlink" title="Crash 捕捉是否是自己实现的，去过启动就发生 crash，如何捕捉"></a>Crash 捕捉是否是自己实现的，去过启动就发生 crash，如何捕捉</h4><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_40201300/article/details/79894533">连续崩溃解决方案</a></p>
+<h4 id="是否做单元测试、UI-测试"><a href="#是否做单元测试、UI-测试" class="headerlink" title="是否做单元测试、UI 测试"></a>是否做单元测试、UI 测试</h4><p>没有</p>
+<h4 id="使用过什么-Json-解析库，Model-转换工具、"><a href="#使用过什么-Json-解析库，Model-转换工具、" class="headerlink" title="使用过什么 Json 解析库，Model 转换工具、"></a>使用过什么 Json 解析库，Model 转换工具、</h4><p>目前项目中使用的 YYModel</p>
+<p><a target="_blank" rel="noopener" href="https://blog.ibireme.com/2015/10/23/ios_model_framework_benchmark/">JSON 模型转换库评测</a></p>
+<h4 id="除了-Autolayout-是否还接触过跨平台的-Yoga-布局"><a href="#除了-Autolayout-是否还接触过跨平台的-Yoga-布局" class="headerlink" title="除了 Autolayout 是否还接触过跨平台的 Yoga 布局"></a>除了 Autolayout 是否还接触过跨平台的 Yoga 布局</h4><p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/d4289b16a133">Yoga 布局</a></p>
+<h4 id="C-请求依赖-A-、B-请求完成如何做，GCD-怎么做，不用-GCD-怎么做，operation-是否能添加多个依赖"><a href="#C-请求依赖-A-、B-请求完成如何做，GCD-怎么做，不用-GCD-怎么做，operation-是否能添加多个依赖" class="headerlink" title="C 请求依赖 A 、B 请求完成如何做，GCD 怎么做，不用 GCD 怎么做，operation 是否能添加多个依赖"></a>C 请求依赖 A 、B 请求完成如何做，GCD 怎么做，不用 GCD 怎么做，operation 是否能添加多个依赖</h4><p>1、信号量，而且能做到多个任务串行执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">dispatch_semaphore_t sema = dispatch_semaphore_create(0);</span><br><span class="line">[网络请求:&#123;</span><br><span class="line">        成功：dispatch_semaphore_signal(sema);</span><br><span class="line">        失败：dispatch_semaphore_signal(sema);</span><br><span class="line">&#125;];</span><br><span class="line">dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);</span><br></pre></td></tr></table></figure>
+
+<p>2、group</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">dispatch_group_t group = dispatch_group_create();    dispatch_group_enter(group);</span><br><span class="line"></span><br><span class="line">// 网络成功/失败</span><br><span class="line">  dispatch_group_leave(group);</span><br><span class="line"></span><br><span class="line">    dispatch_group_notify(group, dispatch_get_global_queue(0, 0), ^&#123;</span><br><span class="line"></span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>NSOperation 添加依赖不能解决异步依赖问题，请求发出后即认为任务完成，所以并不能达到效果。</p>
+<h4 id="Runloop-的-model-是否了解过，UITrackingRunLoopMode-和-NSRunLoopCommonModes-哪个优先级更强"><a href="#Runloop-的-model-是否了解过，UITrackingRunLoopMode-和-NSRunLoopCommonModes-哪个优先级更强" class="headerlink" title="Runloop 的 model 是否了解过，UITrackingRunLoopMode 和 NSRunLoopCommonModes 哪个优先级更强"></a>Runloop 的 model 是否了解过，UITrackingRunLoopMode 和 NSRunLoopCommonModes 哪个优先级更强</h4><blockquote>
+<ul>
+<li>kCFRunLoopDefaultMode, App 的默认运行模式，通常主线程是在这个运行模式下运行</li>
+<li>UITrackingRunLoopMode, 跟踪用户交互事件（用于 ScrollView 追踪触摸滑动，保证界面滑动时不受其他 Mode 影响）</li>
+<li>kCFRunLoopCommonModes, 伪模式，不是一种真正的运行模式</li>
+<li>UIInitializationRunLoopMode：在刚启动 App 时第进入的第一个 Mode，启动完成后就不再使用</li>
+<li>GSEventReceiveRunLoopMode：接受系统内部事件，通常用不到</li>
+</ul>
+</blockquote>
+<p>NSRunLoopCommonModes 只是一种占位模式集合，当绑定一个事件源到这个模式集合的时候就相当于绑定到了集合内的每一个模式.</p>
+<h4 id="多次对同一个方法-method-swizzing，会有什么问题"><a href="#多次对同一个方法-method-swizzing，会有什么问题" class="headerlink" title="多次对同一个方法 method swizzing，会有什么问题"></a>多次对同一个方法 method swizzing，会有什么问题</h4><p>一份 method swizzing 代码多次执行，会反复交换 IMP，可能达不到预期效果</p>
+<p>多个类对同一方法替换，则不会有问题</p>
+<h5 id="method-swizzing-的两种写法讨论"><a href="#method-swizzing-的两种写法讨论" class="headerlink" title="method swizzing 的两种写法讨论"></a>method swizzing 的两种写法讨论</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">// 第一种写法</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        SEL s1 = @selector(go);</span><br><span class="line">        SEL s2 = @selector(stop);</span><br><span class="line">        Class class = object_getClass((id)self);</span><br><span class="line">        Method m1 = class_getClassMethod(class, s1);</span><br><span class="line">        Method m2 = class_getClassMethod(class, s2);</span><br><span class="line">        BOOL success = class_addMethod(class, s1, method_getImplementation(m2), method_getTypeEncoding(m2));</span><br><span class="line">        if (success)&#123;</span><br><span class="line">            class_replaceMethod(class, s2, method_getImplementation(m1), method_getTypeEncoding(m1));</span><br><span class="line">        &#125;</span><br><span class="line">        else&#123;</span><br><span class="line">            method_exchangeImplementations(m1, m2);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">// 第二种写法</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        SEL s1 = @selector(go);</span><br><span class="line">        SEL s2 = @selector(stop);</span><br><span class="line">        Class class = object_getClass((id)self);</span><br><span class="line">        Method m1 = class_getClassMethod(class, s1);</span><br><span class="line">        Method m2 = class_getClassMethod(class, s2);</span><br><span class="line">        method_exchangeImplementations(m1, m2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>二者写法差别在于替换之前是否进行 class_addMethod 判断，第一种是比较严谨的写法；而第二种，当我们想交换有多个继承关系的子类里面的方法并且子类没有实现父类的方法时，直接 method_exchangeImplementations 会把父类的方法也给交换了。</p>
+<blockquote>
+<p><code>class_addMethod</code>函数会检查方法有没有实现，如果已经实现会返回 NO ，也就是直接走<code>method_exchangeImplementations</code>方法；没有实现会先在当前类增加一个新的实现方法，再把目标类中的方法通过<code>class_replaceMethod</code>函数替换为旧有的实现。</p>
+</blockquote>
+<h3 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h3><h4 id="源码管理，终端还是客户端，使用过-cherry-pick-指定没"><a href="#源码管理，终端还是客户端，使用过-cherry-pick-指定没" class="headerlink" title="源码管理，终端还是客户端，使用过 cherry-pick 指定没"></a>源码管理，终端还是客户端，使用过 cherry-pick 指定没</h4><p>混合使用，cherry-pick 的作用是把一个分支的 commit，复制到另一个分支上去。支持复制多个，如果连续可用’..’链接，但是不包括起始的 commitID，如果是不连续多个则直接空格分隔即可</p>
+<h4 id="git-rebase-和-git-stash-使用、作用"><a href="#git-rebase-和-git-stash-使用、作用" class="headerlink" title="git rebase 和 git stash 使用、作用"></a>git rebase 和 git stash 使用、作用</h4><p>git rebase 功能同 merge，rebase 会重整时间线，看上去更加简洁，</p>
+<p>git stash 暂存代码</p>
+<h4 id="删除分支或者-tag-指令"><a href="#删除分支或者-tag-指令" class="headerlink" title="删除分支或者 tag 指令"></a>删除分支或者 tag 指令</h4><p>git branch -D <branch name></p>
+<p>git push origin -delete <branch name></p>
+<p>git push origin :<branch name></p>
+<h3 id="Http-Https"><a href="#Http-Https" class="headerlink" title="Http/Https"></a>Http/Https</h3><h4 id="Https-传输加密的方法，对称加密还是非对称加密"><a href="#Https-传输加密的方法，对称加密还是非对称加密" class="headerlink" title="Https 传输加密的方法，对称加密还是非对称加密?"></a>Https 传输加密的方法，对称加密还是非对称加密?</h4><p>非对称加密仅在握手阶段，传输过程中采用对称加密，原因是对称加密的效率要高于非对称。</p>
+<h4 id="HTPPS-大致传输过程"><a href="#HTPPS-大致传输过程" class="headerlink" title="HTPPS 大致传输过程"></a>HTPPS 大致传输过程</h4><ol>
+<li><p>客户端发送 HTTPS 请求，附带自己的加密算法和 TLC/SSL 版本；</p>
+</li>
+<li><p>服务端接收到请求，发送自己的证书给客户端;</p>
+<blockquote>
+<p>证书中包含了网站的地址，加密用的公钥，以及证书的颁发机构等；</p>
+</blockquote>
+</li>
+<li><p>客户端收到证书校验证书合法性，如果合法，生成一个随机数，然后使用公钥对随机数加密（当然这个随机数，就是以后数据传输的对称加密的秘钥），同时使用该秘钥对消息进行加密；</p>
+<blockquote>
+<p>一般来说，证书是用来标示一个站点是否合法的标志。如果说该证书由权威的第三方颁发和签名的，则说明证书合法。当然客户端也可以信任不合法的证书。</p>
+</blockquote>
+</li>
+<li><p>服务端拿到这个随机数，用私钥解密，得到客户端随机生成的序列号，用此序列号加密消息，对比客户端发来是否一致，校验消息是否被篡改；通过后，加密一段握手消息，同时附带消息加密值，发送给客户端；</p>
+</li>
+<li><p>客户端，拿到消息后，同样首先校验消息完整性，然后检查消息是否为握手消息；</p>
+</li>
+<li><p>握手结束后，客户端和服务端使用在握手阶段生成说的随机数以及挑选出的算法进行对称加密传输。</p>
+</li>
+</ol>
+<h4 id="经常使用的加密算法"><a href="#经常使用的加密算法" class="headerlink" title="经常使用的加密算法"></a>经常使用的加密算法</h4><ol>
+<li>非对称加密算法：RSA, DSA/DSS</li>
+<li>对称加密算法： AES, 3DES</li>
+<li>HASH 算法：MD5, SHA1, SHA256</li>
+</ol>
+<h3 id="组件化相关"><a href="#组件化相关" class="headerlink" title="组件化相关"></a>组件化相关</h3><h4 id="组件化是如何做的，不同模块之间的通信方式"><a href="#组件化是如何做的，不同模块之间的通信方式" class="headerlink" title="组件化是如何做的，不同模块之间的通信方式"></a>组件化是如何做的，不同模块之间的通信方式</h4><p>现在项目，组件之间的通信还是通过 URL 注册维护本地 plist，然后 Router 模块完成调度。</p>
+<h4 id="URL-的方式路由，有什么优化方案，注册的时机是什么？load-方法中注册，耗时如何优化启动时间"><a href="#URL-的方式路由，有什么优化方案，注册的时机是什么？load-方法中注册，耗时如何优化启动时间" class="headerlink" title="URL 的方式路由，有什么优化方案，注册的时机是什么？load 方法中注册，耗时如何优化启动时间"></a>URL 的方式路由，有什么优化方案，注册的时机是什么？load 方法中注册，耗时如何优化启动时间</h4><p>项目会维护一个装有所有界面信息的 plist 表，在 load 方法中，统一加载入内存，通过 Router 方案完成界面跳转和通信。</p>
+<p>优化方案：plist 加载会影响启动时间，是否可以通过 Runtime 的方式，在运行时，把所有的模块信息加载入内存，不做本地的持久化维护和读取，同样也节省了后续页面信息的维护成本。</p>
+<h4 id="除了-Router-的方式，是否还尝试过其他方式的组件化方案"><a href="#除了-Router-的方式，是否还尝试过其他方式的组件化方案" class="headerlink" title="除了 Router 的方式，是否还尝试过其他方式的组件化方案"></a>除了 Router 的方式，是否还尝试过其他方式的组件化方案</h4><p>具体并没有尝试过，有了解过一下几种：</p>
+<ol>
+<li>蘑菇街方案：通过 ModuleManager 来管理所有的 Module URL，调用的时候，传递到 ModuleManager，然后类似 openURL 的形式完成调度。</li>
+<li>case Mediator 方案：通过 target-action 的方式解耦组件和业务方之间的业务，组件持有一个 target 的类，用来初始化组件中的内容，这一块对业务方是无感知的，业务方依赖另一个 Mediator 的 Category 的 repo，调用组件里内容。<a target="_blank" rel="noopener" href="https://casatwy.com/iOS-Modulization.html">CTMediator</a></li>
+<li>BeeHive 方案：暂未详细了解。</li>
+</ol>
+<h4 id="阿里的-BeeHive-是否了解过"><a href="#阿里的-BeeHive-是否了解过" class="headerlink" title="阿里的 BeeHive 是否了解过"></a>阿里的 BeeHive 是否了解过</h4><p>没有</p>
+<h3 id="混合开发"><a href="#混合开发" class="headerlink" title="混合开发"></a>混合开发</h3><h4 id="Hybird、RN、Weex-有尝试过"><a href="#Hybird、RN、Weex-有尝试过" class="headerlink" title="Hybird、RN、Weex 有尝试过"></a>Hybird、RN、Weex 有尝试过</h4><p>并没有尝试过，但都做了了解。分析三种方案的优缺点。</p>
+<h4 id="热修复-JSPatch-原理，在哪个时间点替换的-，如何拿到拿到方法以及参数"><a href="#热修复-JSPatch-原理，在哪个时间点替换的-，如何拿到拿到方法以及参数" class="headerlink" title="热修复 JSPatch 原理，在哪个时间点替换的 ，如何拿到拿到方法以及参数"></a>热修复 JSPatch 原理，在哪个时间点替换的 ，如何拿到拿到方法以及参数</h4><p>当 app 启动，加载 JSEngine 时，会加载下发的 JS 文件，根据文件中所指定的类和方法名，可以在类的 method_list 中找到对应的方法和参数，然后替换对应的方法，这里它并没有直接替换 IMP 指针，而是把触发延迟到消息转发，这样通过 NSInvocation 拿到调用的所有参数值，通过 JavaScriptCore 执行 JS 中的方法。</p>
+<h3 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h3><h4 id="找出-2-个单链表的交点"><a href="#找出-2-个单链表的交点" class="headerlink" title="找出 2 个单链表的交点"></a>找出 2 个单链表的交点</h4><h4 id="二叉树翻转"><a href="#二叉树翻转" class="headerlink" title="二叉树翻转"></a>二叉树翻转</h4>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag"># 面试</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2018/07/23/WebP%E5%88%9D%E6%8E%A2%E5%92%8C%E5%AE%9E%E8%B7%B5/" rel="prev" title="WebP初探和实践">
+                  <i class="fa fa-chevron-left"></i> WebP初探和实践
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2018/09/21/LeetCode%E7%AE%97%E6%B3%95%E5%88%B7%E9%A2%98%E8%AE%B0%E5%BD%95%EF%BC%88%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0-%EF%BC%89/" rel="next" title="LeetCode算法刷题记录（持续更新...）">
+                  LeetCode算法刷题记录（持续更新...） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">番茄是一只猫</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

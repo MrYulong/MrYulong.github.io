@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.0.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"mryulong.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.9.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+<meta name="description" content="引子最近接触一款叫 Thor 的软件很好用，类似 Charles 实现手机端抓包软件，可自定义各种规则可以拦截修改请求。网上就出现很多热心朋友分享各种规则规则，通过修改接口开实现破解 App 的效果，接触到一个 TikTok 换区规则激起了我的兴趣。 看了下规则，大致的原理都是替换请求参数中的 sys_region 与 carrier_region等字段，这种方法虽好，但如果哪天他们开始接口签名校">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TikTok 逆向记录">
+<meta property="og:url" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="番茄是一只猫的博客">
+<meta property="og:description" content="引子最近接触一款叫 Thor 的软件很好用，类似 Charles 实现手机端抓包软件，可自定义各种规则可以拦截修改请求。网上就出现很多热心朋友分享各种规则规则，通过修改接口开实现破解 App 的效果，接触到一个 TikTok 换区规则激起了我的兴趣。 看了下规则，大致的原理都是替换请求参数中的 sys_region 与 carrier_region等字段，这种方法虽好，但如果哪天他们开始接口签名校">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/reveal.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/port.png">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_l.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_b.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_r.png">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/class-dump.png">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/MonkeyDevSetting.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/monkey_class-dump.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/initProject.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/CaptainHook_b.jpg">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/region.PNG">
+<meta property="og:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/iphone.PNG">
+<meta property="article:published_time" content="2019-04-21T02:32:53.000Z">
+<meta property="article:modified_time" content="2022-02-09T03:04:54.521Z">
+<meta property="article:author" content="番茄是一只猫">
+<meta property="article:tag" content="MonkeyDev">
+<meta property="article:tag" content="逆向">
+<meta property="article:tag" content="TikTok">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/reveal.jpg">
+
+
+<link rel="canonical" href="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/","path":"2019/04/21/TikTok-逆向记录/","title":"TikTok 逆向记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>TikTok 逆向记录 | 番茄是一只猫的博客</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="番茄是一只猫的博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">番茄是一只猫的博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Say something</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E5%AD%90"><span class="nav-number">1.</span> <span class="nav-text">引子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">逆向工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#frida-ios-dump"><span class="nav-number">2.1.</span> <span class="nav-text">frida-ios-dump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hopper"><span class="nav-number">2.2.</span> <span class="nav-text">Hopper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#class-dump"><span class="nav-number">2.3.</span> <span class="nav-text">class-dump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reveal"><span class="nav-number">2.4.</span> <span class="nav-text">Reveal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Tweak-%E8%AF%AD%E6%B3%95"><span class="nav-number">2.5.</span> <span class="nav-text">Tweak 语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#CaptainHook"><span class="nav-number">2.5.1.</span> <span class="nav-text">CaptainHook</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Logos"><span class="nav-number">2.5.2.</span> <span class="nav-text">Logos</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MonkeyDev"><span class="nav-number">2.6.</span> <span class="nav-text">MonkeyDev</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E9%80%86%E5%90%91"><span class="nav-number">3.</span> <span class="nav-text">开始逆向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A0%B8%E5%A3%B3"><span class="nav-number">3.1.</span> <span class="nav-text">砸壳</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#class-dump-1"><span class="nav-number">3.2.</span> <span class="nav-text">class-dump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hook-%E9%83%A8%E5%88%86"><span class="nav-number">3.3.</span> <span class="nav-text">Hook 部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%8C%85%E5%AE%89%E8%A3%85"><span class="nav-number">3.4.</span> <span class="nav-text">打包安装</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">参考文章</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="番茄是一只猫"
+      src="/images/avatar.jpeg">
+  <p class="site-author-name" itemprop="name">番茄是一只猫</p>
+  <div class="site-description" itemprop="description">常怀敬畏之心，方能行有所止</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">9</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/MrYulong" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;MrYulong" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:yulong.me@gmail.com" title="E-Mail → mailto:yulong.me@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://mryulong.github.io/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="番茄是一只猫">
+      <meta itemprop="description" content="常怀敬畏之心，方能行有所止">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="番茄是一只猫的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TikTok 逆向记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-04-21 10:32:53" itemprop="dateCreated datePublished" datetime="2019-04-21T10:32:53+08:00">2019-04-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-02-09 11:04:54" itemprop="dateModified" datetime="2022-02-09T11:04:54+08:00">2022-02-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h2><p>最近接触一款叫 Thor 的软件很好用，类似 Charles 实现手机端抓包软件，可自定义各种规则可以拦截修改请求。网上就出现很多热心朋友分享各种规则规则，通过修改接口开实现破解 App 的效果，接触到一个 TikTok 换区规则激起了我的兴趣。</p>
+<p>看了下规则，大致的原理都是替换请求参数中的 <strong>sys_region</strong> 与 <strong>carrier_region</strong>等字段，这种方法虽好，但如果哪天他们开始接口签名校验不就马上不灵了，不如逆向来的稳妥。然后 GitHub 上找到 <a target="_blank" rel="noopener" href="https://github.com/AYJk/AYTikTokPod">AYTikTokPod</a>，正好实践下一个 APP 的一个完整逆向过程，于是有了下面的内容。</p>
+<span id="more"></span>
+
+<h2 id="逆向工具"><a href="#逆向工具" class="headerlink" title="逆向工具"></a>逆向工具</h2><p>逆向开发相对正常开发，只用到一个 xcode 搞定所有，需要的工具很多，从开始想要逆向一个 APP 开始，就要用到一系列的工具，首先配置下环境。</p>
+<h3 id="frida-ios-dump"><a href="#frida-ios-dump" class="headerlink" title="frida-ios-dump"></a>frida-ios-dump</h3><p>由于从 App Store 下载的 ipa 都已经被 Apple 加密了，我们无法直接逆向分析，第一步就需要突破这层限制，就是我们所谓的砸壳。早先砸壳大多使用 <a target="_blank" rel="noopener" href="https://github.com/stefanesser/dumpdecrypted">dumpdecrypted</a> ，步骤比较麻烦， 基于 <a target="_blank" rel="noopener" href="https://www.frida.re/docs/home/">frida</a> 的<a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/frida-ios-dump">frida-ios-dump</a> 相对就简单很多，通过注入 js 实现内存 dump，通过 python 自动拷贝到电脑生成 ipa 文件，实现动态砸壳。大致步骤如下，更详细可以参照作者博客：<a target="_blank" rel="noopener" href="http://www.alonemonkey.com/2018/01/30/frida-ios-dump/">一条命令完成砸壳</a>。</p>
+<ol>
+<li>安装 frida<br>中间有几次始终卡在 Building wheel for frida (setup.py) ，重试几次搞定又出现错误 Running setup.py bdist_wheel for frida …，提示加上 –user，加上参数解决。</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install frida-tools</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>安装 <a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/frida-ios-dump">frida-ios-dump</a></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/AloneMonkey/frida-ios-dump.git</span><br><span class="line">cd frida-ios-dump</span><br><span class="line">sudo pip install -r requirements.txt --upgrade</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hopper"><a href="#Hopper" class="headerlink" title="Hopper"></a>Hopper</h3><p>一款二进制反编译器，非常强大，我也是知道点皮毛，这里我们就用它一个功能，把上面得到的 .app 反编译，生成伪代码，扫描完之后既可以看到左边侧栏的方法调用了。班门弄斧，不再详说。</p>
+<h3 id="class-dump"><a href="#class-dump" class="headerlink" title="class-dump"></a>class-dump</h3><p>安装 <a target="_blank" rel="noopener" href="http://stevenygard.com/projects/class-dump/">class-dump</a></p>
+<ol>
+<li><p>下载 安装包</p>
+</li>
+<li><p>把 class-dump 拷贝到 /usr/local/bin ，更改权限</p>
+</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod 777 /usr/local/bin/class-dump</span><br></pre></td></tr></table></figure>
+
+<h3 id="Reveal"><a href="#Reveal" class="headerlink" title="Reveal"></a>Reveal</h3><p><a href="%5Bhttp://revealapp.com/download/%5D(https://link.jianshu.com/?t=http://revealapp.com/download/">Reveal</a> 是一个 iOS 程序界面调试工具，它能够在应用程序运行过程中调试应用程序界面。可以帮组我们看到当前运行 APP 的 UI 层级，控件组成等信息，窥探 APP 实现的利器。使用方法也很简单，只用把 RevealService.framework 放入项目跑起来，然后 USB 连接电脑就可以在 Reveal 的界面看到当前程序了，当然如果手机是越狱手机，就更可以一劳永逸了，比如：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1d63866467e5">这样</a>，由于手边没有越狱手机，还没有实践过。</p>
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/reveal.jpg" alt="Reveal"></p>
+<h3 id="Tweak-语法"><a href="#Tweak-语法" class="headerlink" title="Tweak 语法"></a>Tweak 语法</h3><p>简单说下 Tweak 代码语法，这次接触到 Logos 和 CaptainHook ，总体来说使用起来很方便，简单说下语法规则，大神请绕道。</p>
+<h4 id="CaptainHook"><a href="#CaptainHook" class="headerlink" title="CaptainHook"></a>CaptainHook</h4><p>常用语法可以参考<a target="_blank" rel="noopener" href="https://github.com/rpetrich/CaptainHook/wiki">CaptainHook</a>文档，基于 runtime method swizzling，使用流程也比较简单，使用步骤大概就是 CHDeclareClass 声明 Hook 类， CHMethod 方法替换，在这里可以 CHSuper 来调用原来的方法，CHConstructor 加载 Hook 的方法和所在的类。下面是 hook UIViewController 的摇一摇回调方法的代码，可以参考下。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">// 声明需要Hook的类</span><br><span class="line">CHDeclareClass(UIViewController)</span><br><span class="line"></span><br><span class="line">// 方法Hook的实现</span><br><span class="line">CHMethod2(void, UIViewController, motionEnded, UIEventSubtype, motion, withEvent, UIEvent *, event) &#123;</span><br><span class="line"></span><br><span class="line">  	// 调用之前的方法</span><br><span class="line">    CHSuper2(UIViewController, motionEnded, motion, withEvent, event);</span><br><span class="line"></span><br><span class="line"> 		// hook 代码</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 加载Hook的方法和所在的类</span><br><span class="line">CHConstructor &#123;</span><br><span class="line">  	// 加载Hook类</span><br><span class="line">    CHLoadLateClass(UIViewController);</span><br><span class="line">  	// 声明要 hook 的方法</span><br><span class="line">    CHClassHook2(UIViewController, motionEnded, withEvent);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Logos"><a href="#Logos" class="headerlink" title="Logos"></a>Logos</h4><p>常用语法也比较简单，下面列举下常用语法，如果定义 subclass 、新增属性等更丰富的功能可以查看文档很详细 <a target="_blank" rel="noopener" href="http://iphonedevwiki.net/index.php/Logos#.25property">Logos</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">%hook 类名</span><br><span class="line"></span><br><span class="line">// hook 类的原有方法</span><br><span class="line">- (void)原有方法:(id)arg1 ....&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">%new</span><br><span class="line">- (void)新增方法:(id)arg1 .... &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">%end</span><br></pre></td></tr></table></figure>
+
+<h3 id="MonkeyDev"><a href="#MonkeyDev" class="headerlink" title="MonkeyDev"></a>MonkeyDev</h3><p>上面涉及的工具很多，每个都有不同作用，难免有些繁杂，于是，AloneMonkey 大神的 <a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/MonkeyDev">MonkeyDev</a> 出现了，同事大神也是上面说到的 <a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/frida-ios-dump">frida-ios-dump</a> 的作者，🐂 🍺。原有 iOSOpenDev 的升级，非越狱插件开发集成神器！</p>
+<p>工具集成了四个模块 Logos Tweak 、CaptainHook Tweak、Command-line Tool、 MonkeyApp，支持 class-dump 、RevealService.framework 自动导入、插件集成，真真全家桶，也就是说只要把砸完壳的 ipa 拖入项目，就可以开始写 Hook 代码了，支持 <a target="_blank" rel="noopener" href="http://iphonedevwiki.net/index.php/Logos#Overview">Logos</a> 和 <a target="_blank" rel="noopener" href="https://github.com/rpetrich/CaptainHook/wiki">CaptainHook</a> 语法。具体详细使用教程可以看 <a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/MonkeyDev/wiki">WiKi</a>。</p>
+<h2 id="开始逆向"><a href="#开始逆向" class="headerlink" title="开始逆向"></a>开始逆向</h2><p>下面是整个逆向的过程，工具介绍完了，步骤就没什么好说的了，基本上 MonkeyDev 搞定一切， 👍。</p>
+<h3 id="砸壳"><a href="#砸壳" class="headerlink" title="砸壳"></a>砸壳</h3><p>使用上面介绍的 frida-ios-dump 完成砸壳，拿到 TikTok 的 ipa，具体步骤：</p>
+<ol>
+<li>将越狱设备通过 USB 连上电脑进行端口映射</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">iproxy 2222 22</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/port.png" alt="运行程序"></p>
+<ol start="2">
+<li>砸壳</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dump.py -l    // 打开想要砸壳的应用，查看当前运行的程序</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_l.jpg" alt="运行程序"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./dump.py  AppName / Bundle identifier  // 会在同级目录生成  xxx.ipa</span><br></pre></td></tr></table></figure>
+
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_b.jpg" class=""></div><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/dump_r.png" class=""></div></div></div>
+
+<h3 id="class-dump-1"><a href="#class-dump-1" class="headerlink" title="class-dump"></a>class-dump</h3><p>使用 class-dump 指令，拿到所有头文件。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class-dump -H [.app文件的路径] -o [输出文件夹路径]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/class-dump.png" alt="class-dump"></p>
+<p>如果不采用这种方式，还可以在 MonkeyApp 项目里的 <code>Build Settings</code> 里打开 MONKEYDEV_CLASS_DUMP 功能，重新编译即可在项目目录里找到。</p>
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/MonkeyDevSetting.jpg" class=""></div><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/monkey_class-dump.jpg" class=""></div></div></div>
+
+<h3 id="Hook-部分"><a href="#Hook-部分" class="headerlink" title="Hook 部分"></a>Hook 部分</h3><p>我们新建 MonkeyApp , 然后拖入 ipa 到 <code>TargetApp</code> 文件夹 。</p>
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/initProject.jpg"></p>
+<p>打开 MonkeyAppDylib.m ，使用 CaptainHook 语法书写 hook 部分代码，这里主要代码是来自 <a target="_blank" rel="noopener" href="https://github.com/AYJk/AYTikTokPod">AYTikTokPod</a>，我把入口改为摇一摇触发设置界面显示。说到这里不得不提一下，MonkeyDev 支持 Cocoapods，并且作者有维护一个叫 <a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/MonkeyDevSpecs">MonkeyDevSpecs</a> 的 Cocoapods 私有仓库，让插件集成变得更加简单。</p>
+<p><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/CaptainHook_b.jpg"></p>
+<h3 id="打包安装"><a href="#打包安装" class="headerlink" title="打包安装"></a>打包安装</h3><p>MonkeyDev 提供一键打包脚本，<code>Build Succeeded</code> 后，在根目录文件下，点击 <code>项目目录/LatestBuild/createIPA.command</code> 搞定，稍等就会生成 ipa 文件。<br><a target="_blank" rel="noopener" href="https://github.com/MrYulong/TikTokMonkeyApp"></a></p>
+<p>至此，换区和缓存功能都完成了，然后后面就躺在手机里，果然外国的小姐姐也吸引不了我，最后放两张效果图：</p>
+<div class="group-picture"><div class="group-picture-row"><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/region.PNG" class=""></div><div class="group-picture-column"><img src="/2019/04/21/TikTok-%E9%80%86%E5%90%91%E8%AE%B0%E5%BD%95/iphone.PNG" class=""></div></div></div>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总体来说，这次逆向是顺利的，一来 MonkeyDev 工具实在是太方便 ，二来逆向的思路 <a target="_blank" rel="noopener" href="https://github.com/AYJk/AYTikTokPod">AYTikTokPod</a> 已经提供，我就是简单程式化的体验了各个工具的使用和安装，虽然也遇到各种各样的坑，仍然是一个愉快探索过程，后面尝试自己独立逆向分析其他 App 完成一个自己的功能，加油。</p>
+<p>项目完整代码 <a target="_blank" rel="noopener" href="https://github.com/MrYulong/TikTokMonkeyApp">TikTokMonkeyApp</a> ，有兴趣可以下载看下。</p>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/MonkeyDev/wiki">https://github.com/AloneMonkey/MonkeyDev/wiki</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/AloneMonkey/frida-ios-dump">https://github.com/AloneMonkey/frida-ios-dump</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/stefanesser/dumpdecrypted">https://github.com/stefanesser/dumpdecrypted</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.alonemonkey.com/2018/01/30/frida-ios-dump">http://www.alonemonkey.com/2018/01/30/frida-ios-dump</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rpetrich/CaptainHook/wiki">https://github.com/rpetrich/CaptainHook/wiki</a></li>
+<li><a target="_blank" rel="noopener" href="http://iphonedevwiki.net/index.php/Logos">http://iphonedevwiki.net/index.php/Logos</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/AYJk/AYTikTokPod">https://github.com/AYJk/AYTikTokPod</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/MonkeyDev/" rel="tag"># MonkeyDev</a>
+              <a href="/tags/%E9%80%86%E5%90%91/" rel="tag"># 逆向</a>
+              <a href="/tags/TikTok/" rel="tag"># TikTok</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/09/ReplayKit%20%E8%B8%A9%E5%9D%91%E5%85%A8%E8%AE%B0%E5%BD%95/" rel="prev" title="ReplayKit 踩坑全记录">
+                  <i class="fa fa-chevron-left"></i> ReplayKit 踩坑全记录
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/08/21/iOS-%E9%80%86%E5%90%91%E4%BA%8C%E4%B8%89%E4%BA%8B/" rel="next" title="iOS 逆向二三事">
+                  iOS 逆向二三事 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2018 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">番茄是一只猫</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
